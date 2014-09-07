@@ -9,15 +9,15 @@ import java.util.Random;
 public class BagCollection<T> implements AccessOps1<T> {
     private static final int DEFAULT_SIZE = 10;
 
-    private int bagSize, itemCount = 0, position = 0;
+    private int bagSize, itemCount = 0;
     private Object[] basis;
 
-    public BagCollection(){
+    public BagCollection() {
         this(DEFAULT_SIZE);
     }
 
-    public BagCollection(int InitialSize){
-        if(InitialSize >= 0) {
+    public BagCollection(int InitialSize) {
+        if (InitialSize >= 0) {
             this.bagSize = InitialSize;
             basis = new Object[this.bagSize];
         } else {
@@ -27,50 +27,55 @@ public class BagCollection<T> implements AccessOps1<T> {
 
     @Override
     public void add(T element) {
-        if((itemCount + 1) >= basis.length){
+        if (itemCount == basis.length) {
             expand();
         }
         itemCount++;
-        basis[itemCount-1] = element;
+        basis[itemCount - 1] = element;
     }
 
     @Override
     public void remove(T element) {
-        for(int index = 0; index < itemCount; index++){
-            if(basis[index] == element){
-                System.arraycopy(basis,index+1,basis,index,itemCount-(index+1));
+        for (int index = 0; index < itemCount; index++) {
+            if (basis[index].equals(element)) {
+                System.arraycopy(basis, index + 1, basis, index, itemCount - (index + 1));
                 break;
             }
         }
     }
 
     @Override
-    public T removeRandom() {
+    public void removeRandom() {
         Random gen = new Random();
-        T capture = (T)basis[gen.nextInt(bagSize-1)];
-        remove(capture);
-        return capture;
+        remove((T) basis[gen.nextInt(bagSize - 1)]);
     }
 
     @Override
     public boolean contains(T element) {
-        for(int index = 0; index < itemCount; index++) {
-            if (basis[index] == element) {
+        for (int index = 0; index < itemCount; index++) {
+            if (basis[index].equals(element)) {
                 return true;
             }
         }
         return false;
     }
 
-    @Override
-    public boolean isEmpty() { return bagSize == 0; }
-
-    @Override
-    public int size() { return this.itemCount; }
-
-    private void expand(){
+    private void expand() {
         bagSize += bagSize >> 1;
         basis = Arrays.copyOf(basis, bagSize);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return bagSize == 0;
+    }
+
+    @Override
+    public int size() {
+        return this.itemCount;
+    }
+
+    public int getCapacity() {
+        return this.bagSize;
+    }
 }
