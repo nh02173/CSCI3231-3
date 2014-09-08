@@ -8,7 +8,7 @@ import java.util.Random;
  */
 public class BagCollection<T> implements AccessOps1<T> {
     private static final int DEFAULT_SIZE = 10;
-    private int bagSize, itemCount = 0;
+    private int size, itemCount = 0;
     private Object[] basis;
 
     @Override
@@ -22,7 +22,7 @@ public class BagCollection<T> implements AccessOps1<T> {
     }
 
     public int getCapacity() {
-        return this.bagSize;
+        return this.size;
     }
 
     public BagCollection() {
@@ -31,13 +31,13 @@ public class BagCollection<T> implements AccessOps1<T> {
 
     public BagCollection(int InitialSize) {
         if (InitialSize >= 0) {
-            this.bagSize = InitialSize;
-            basis = new Object[this.bagSize];
+            this.size = InitialSize;
+            basis = new Object[this.size];
         } else {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
 
-        System.out.println(">>> Bag set with initial size of " + this.bagSize);
+        System.out.println(">>> Bag set with initial size of " + this.size);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BagCollection<T> implements AccessOps1<T> {
     @Override
     public void removeRandom() {
         Random gen = new Random();
-        int selection = gen.nextInt(bagSize - 1);
+        int selection = gen.nextInt(size - 1);
         System.out.println("Randomly selected item at position " + selection + " ('"
                 + basis[selection].toString() + "') for removal");
         remove((T) basis[selection]);
@@ -111,10 +111,10 @@ public class BagCollection<T> implements AccessOps1<T> {
     }
 
     private void expand() {
-        bagSize += bagSize >> 1;
-        basis = Arrays.copyOf(basis, bagSize);
+        size += size >> 1;
+        basis = Arrays.copyOf(basis, size);
 
-        System.out.println("> Capacity expanded to " + bagSize);
+        System.out.println("> Capacity expanded to " + size);
     }
 
     private void markItem(int basisIndex) {
