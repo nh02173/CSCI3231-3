@@ -70,13 +70,7 @@ public class Main {
     }
 
     static String getRandomText() {
-        String input = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida in erat in condimentum." +
-                " Aliquam viverra tellus sem, non suscipit nunc facilisis et. Quisque tristique egestas nulla, eu" +
-                " varius arcu luctus at. Suspendisse vestibulum pharetra ligula, quis porta lorem vehicula id." +
-                " Praesent fermentum euismod elementum. Fusce elementum pretium nunc a aliquam. Proin vel sapien quis" +
-                " leo vestibulum convallis. Integer nisl lacus, tincidunt quis faucibus non, viverra cursus ante." +
-                " Duis porttitor pretium viverra. Cras eget urna id dui auctor semper. Sed et orci vel erat viverra" +
-                " finibus. Fusce est eros, dictum in cursus vel, tempus non libero. Phasellus commodo sem at.";
+        String input = "The quick brown fox jumped over the lazy dog.";
 
         Random gen = new Random();
         int start = gen.nextInt(input.length());
