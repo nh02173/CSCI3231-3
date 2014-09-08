@@ -23,6 +23,8 @@ public class BagCollection<T> implements AccessOps1<T> {
         } else {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
+
+        System.out.println("Bag set with initial size of " + this.bagSize);
     }
 
     @Override
@@ -32,15 +34,19 @@ public class BagCollection<T> implements AccessOps1<T> {
         }
         itemCount++;
         basis[itemCount - 1] = element;
+
+        System.out.println("Added new element " + element.toString());
     }
 
     @Override
     public void remove(T element) {
-        for (int index = 0; index < itemCount; index++) {
-            if (basis[index].equals(element)) {
-                System.arraycopy(basis, index + 1, basis, index, itemCount - (index + 1));
-                break;
-            }
+        int result = contains(element);
+
+        if(result > 0){
+            System.arraycopy(basis, result + 1, basis, result, itemCount - (result + 1));
+            System.out.println("Removed element " + element.toString() + " at position " + result);
+        } else {
+            System.out.println("Noting removed");
         }
     }
 
@@ -51,18 +57,23 @@ public class BagCollection<T> implements AccessOps1<T> {
     }
 
     @Override
-    public boolean contains(T element) {
+    public int contains(T element) {
         for (int index = 0; index < itemCount; index++) {
             if (basis[index].equals(element)) {
-                return true;
+                System.out.println("Found element '" + element.toString() + "' at index " + index);
+                return index;
             }
         }
-        return false;
+        System.out.println("Element '" + element.toString() + "' is not contained in this collection");
+
+        return 0;
     }
 
     private void expand() {
         bagSize += bagSize >> 1;
         basis = Arrays.copyOf(basis, bagSize);
+
+        System.out.println("Capacity expanded to " + bagSize);
     }
 
     @Override

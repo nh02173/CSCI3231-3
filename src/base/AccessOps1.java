@@ -8,6 +8,6 @@ public interface AccessOps1<T> {
     void remove(T element);
     void removeRandom();
     boolean isEmpty();
-    boolean contains(T element);
+    int contains(T element);
     int size();
 }
