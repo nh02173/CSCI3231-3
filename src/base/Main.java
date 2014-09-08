@@ -33,7 +33,7 @@ public class Main {
         System.out.println("-The current state is isEmpty=" + test1.isEmpty());
 
         // Should be 10 + sampleSize1
-        System.out.println("-The current Bag size is " + test1.size());
+        System.out.println("-The current number of items is " + test1.size());
 
         /* Test with numbers
         - Test constructor w/parameter

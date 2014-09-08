@@ -37,7 +37,7 @@ public class BagCollection<T> implements AccessOps1<T> {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
 
-        System.out.println(">>> Bag set with initial size of " + this.size);
+        System.out.println(">>> Bag set with initial capacity of " + this.size);
     }
 
     @Override
