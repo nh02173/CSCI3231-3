@@ -70,7 +70,7 @@ public class Main {
     }
 
     static String getRandomText() {
-        String input = "The quick brown fox jumped over the lazy dog.";
+        String input = "The quick brown fox jumps over the lazy dog.";
 
         Random gen = new Random();
         int start = gen.nextInt(input.length());
