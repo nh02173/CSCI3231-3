@@ -58,6 +58,24 @@ public class Main {
 
         // ACCESS OPERATIONS 2
 
+        /* Test collections (matching types)
+        - Test union() on empty collection
+        - Test addAll()
+        - Test union() on non-empty collection
+        - Test equals() on matching collection
+        - Test equals() on non-matching collection
+         */
+
+
+
+        /* Test collections (disparate types)
+        - Test union() (exception)
+        - Test addAll() (exception)
+        - Test equals() (false)
+         */
+
+
+
     }
 
     static int getRandomInt(int bounds) {

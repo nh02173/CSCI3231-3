@@ -5,8 +5,8 @@ package base;
  */
 public interface AccessOps1<T> {
     void add(T element);
-    void remove(T element);
-    void removeRandom();
+    T remove(T element);
+    T removeRandom();
     boolean isEmpty();
     int contains(T element);
     int size();

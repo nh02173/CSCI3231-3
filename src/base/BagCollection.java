@@ -8,7 +8,13 @@ import java.util.Random;
  */
 public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection<T>> {
     private static final int DEFAULT_SIZE = 10;
-    private int size, itemCount = 0;
+
+    // Debugging console output adds unneeded complexity. Set to false otherwise.
+    private static final boolean DEBUG = true;
+
+    private int max, itemCount = 0;
+
+    // Backing object
     private Object[] basis;
 
     public BagCollection() {
@@ -16,14 +22,15 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
     }
 
     public BagCollection(int InitialSize) {
+        // Only positive values are allowed (0 is ok)
         if (InitialSize >= 0) {
-            this.size = InitialSize;
-            basis = new Object[this.size];
+            this.max = InitialSize;
+            basis = new Object[this.max];
         } else {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
 
-        System.out.println(">>> Bag set with initial capacity of " + this.size);
+        System.out.println(">>> Bag set with initial capacity of " + this.max);
     }
 
     @Override
@@ -33,15 +40,17 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public int size() {
+        // In this case, size means how many items are contained in the collection
         return this.itemCount;
     }
 
     public int getCapacity() {
-        return this.size;
+        return this.max;
     }
 
     @Override
     public void add(T element) {
+        // Expand items == capacity
         if (itemCount == basis.length) {
             expand();
         }
@@ -51,35 +60,60 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         System.out.println("Added new element '" + element.toString() + "'");
     }
 
+    // Extra: Retrieve item at index
+    public T get(int index){
+        if(index < itemCount) {
+            return (T) basis[index];
+        } else {
+            throw new IndexOutOfBoundsException("The collection index specified is out of bounds.");
+        }
+    }
+
     @Override
-    // Can only remove first occurrence
-    public void remove(T element) {
+    // Remove by comparison
+    public T remove(T element) {
         int result = contains(element);
 
         if (result >= 0) {
-            removeInternal(result);
+            return removeInternal(result);
+        } else {
+            return null;
         }
     }
 
-    private void removeInternal(int index) {
+    // All remove actions are by index internally
+    private T removeInternal(int index) {
+        T output;
+
         if (index < itemCount) {
+            output= (T) basis[index];
+
+            // Copy from index + 1 to end - 1
             System.arraycopy(basis, index + 1, basis, index, (itemCount - index) - 1);
+
+            // Then null the last item
             basis[itemCount - 1] = null;
+
             itemCount -= 1;
             System.out.println("Removed item at index " + index);
             System.out.println(this.toString());
+
+            return output;
         } else {
-            System.out.println("Nothing removed");
+            throw new IndexOutOfBoundsException("The collection index specified is out of bounds.");
         }
     }
 
     @Override
-    public void removeRandom() {
+    public T removeRandom() {
         Random gen = new Random();
-        int selection = gen.nextInt(size - 1);
+
+        // Remove by item count since the collection doesn't shrink
+        int selection = gen.nextInt(itemCount - 1);
+
         System.out.println("Randomly selected item at position " + selection + " ('"
                 + basis[selection].toString() + "') for removal");
-        remove((T) basis[selection]);
+        return remove((T) basis[selection]);
     }
 
     @Override
@@ -98,56 +132,92 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public String toString() {
-        StringBuilder collect = new StringBuilder();
-        collect.append("{");
-        for (int index = 0; index < itemCount; index++) {
-            collect.append(basis[index].toString());
-            if (index < itemCount - 1) {
-                collect.append(",");
+        if(DEBUG) {
+            StringBuilder collect = new StringBuilder();
+            collect.append("{");
+            for (int index = 0; index < itemCount; index++) {
+                collect.append(basis[index].toString());
+                if (index < itemCount - 1) {
+                    collect.append(",");
+                }
             }
+            collect.append("}");
+            return collect.toString();
+        } else {
+            return "Collection contains " + this.itemCount + " elements.";
         }
-        collect.append("}");
-        return collect.toString();
     }
 
     @Override
-    public void addAll(BagCollection<T> srcCollection, BagCollection<T> destCollection) {
-
+    public void addAll(BagCollection<T> source) {
+        for(int index = 0; index < source.size(); index++){
+            this.add(source.get(index));
+        }
     }
 
     @Override
-    public BagCollection<T> union(BagCollection<T> col1, BagCollection<T> col2) {
-        return null;
+    public BagCollection<T> union(BagCollection<T> source) {
+        BagCollection<T> output = this;
+        for(int index = 0; index < source.size(); index++){
+            output.add(source.get(index));
+        }
+        return output;
     }
 
     @Override
-    public Boolean equals(BagCollection<T> col1, BagCollection<T> col2) {
-        return null;
+    public Boolean equals(BagCollection<T> subject) {
+        // Check size first
+        if(subject.size() == this.max){
+            // Union to temp
+            BagCollection<T> temp = this.union(subject);
+            T findItem;
+
+            for(int index = 0; index < temp.size(); index++){
+                // Hold item
+                findItem = subject.get(index);
+                // Remove from temp
+                temp.remove(findItem);
+                // Temp should still contain a duplicate if equal
+                if(temp.contains(findItem) < 0){
+                    return false;
+                } else {
+                    // Remove the duplicate
+                    temp.remove(findItem);
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void expand() {
-        size += size >> 1;
-        basis = Arrays.copyOf(basis, size);
+        // Bit shift to expand gracefully
+        max += max >> 1;
+        basis = Arrays.copyOf(basis, max);
 
-        System.out.println("> Capacity expanded to " + size);
+        System.out.println("> Capacity expanded to " + max);
     }
 
+    // Adds nice console output for debugging.
     private void markItem(int basisIndex) {
-        String toString = this.toString();
-        StringBuilder collect = new StringBuilder();
-        collect.append(toString);
-        collect.append("\n");
-        int appendCount = toString.indexOf(",");
-        int commaPos = appendCount;
-        collect.append(" ");
-        for (int markCount = 0; markCount < basisIndex; markCount++) {
-            for (int n = 0; n < appendCount; n++) {
-                collect.append(" ");
+        if(DEBUG) {
+            String toString = this.toString();
+            StringBuilder collect = new StringBuilder();
+            collect.append(toString);
+            collect.append("\n");
+            int appendCount = toString.indexOf(",");
+            int commaPos = appendCount;
+            collect.append(" ");
+            for (int markCount = 0; markCount < basisIndex; markCount++) {
+                for (int n = 0; n < appendCount; n++) {
+                    collect.append(" ");
+                }
+                appendCount = toString.indexOf(",", commaPos + 1) - commaPos;
+                commaPos = toString.indexOf(",", commaPos + 1);
             }
-            appendCount = toString.indexOf(",", commaPos + 1) - commaPos;
-            commaPos = toString.indexOf(",", commaPos + 1);
+            collect.append("^");
+            System.out.println(collect.toString());
         }
-        collect.append("^");
-        System.out.println(collect.toString());
     }
 }
