@@ -37,7 +37,7 @@ public class Main {
 
         /* Test with numbers
         - Test constructor w/parameter
-        - Test getCapacity()
+        - Test getMax()
         - Test contains(T)
         - Test remove(T)
         - Test removeRandom()
@@ -48,7 +48,7 @@ public class Main {
         BagCollection<Integer> test2 = new BagCollection<Integer>(sampleSize2);
 
         // Populate bag to capacity
-        for (int index = 0; index < test2.getCapacity(); index++) {
+        for (int index = 0; index < test2.getMax(); index++) {
             test2.add(getRandomInt(sampleSize2));
         }
 

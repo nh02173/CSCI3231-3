@@ -44,7 +44,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         return this.itemCount;
     }
 
-    public int getCapacity() {
+    public int getMax() {
         return this.max;
     }
 
@@ -94,7 +94,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
             // Then null the last item
             basis[itemCount - 1] = null;
 
-            itemCount -= 1;
+            itemCount--;
             System.out.println("Removed item at index " + index);
             System.out.println(this.toString());
 
@@ -144,7 +144,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
             collect.append("}");
             return collect.toString();
         } else {
-            return "Collection contains " + this.itemCount + " elements.";
+            return "BagCollection<T> with " + this.itemCount + " elements.";
         }
     }
 
