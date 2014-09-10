@@ -55,9 +55,6 @@ public class Main {
         test2.contains(getRandomInt(sampleSize2));
         test2.remove(getRandomInt(sampleSize2));
         test2.removeRandom();
-
-        // ACCESS OPERATIONS 2
-
     }
 
     static int getRandomInt(int bounds) {
