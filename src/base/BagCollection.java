@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * Created by Nick on 9/7/2014.
  */
-public class BagCollection<T> implements AccessOps1<T> {
+public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection<T>> {
     private static final int DEFAULT_SIZE = 10;
 
     // Debugging console output adds unneeded complexity. Set to false otherwise.
@@ -145,6 +145,48 @@ public class BagCollection<T> implements AccessOps1<T> {
             return collect.toString();
         } else {
             return "Collection contains " + this.itemCount + " elements.";
+        }
+    }
+
+    @Override
+    public void addAll(BagCollection<T> source) {
+        for(int index = 0; index < source.size(); index++){
+            this.add(source.get(index));
+        }
+    }
+
+    @Override
+    public BagCollection<T> union(BagCollection<T> source) {
+        BagCollection<T> output = this;
+        for(int index = 0; index < source.size(); index++){
+            output.add(source.get(index));
+        }
+        return output;
+    }
+
+    public Boolean equals(BagCollection<T> subject){
+        // Check size first
+        if(subject.size() == this.max){
+            // Union to temp
+            BagCollection<T> temp = this.union(subject);
+            T findItem;
+
+            for(int index = 0; index < temp.size(); index++){
+                // Hold item
+                findItem = subject.get(index);
+                // Remove from temp
+                temp.remove(findItem);
+                // Temp should still contain a duplicate if equal
+                if(temp.contains(findItem) < 0){
+                    return false;
+                } else {
+                    // Remove the duplicate
+                    temp.remove(findItem);
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
