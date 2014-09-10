@@ -6,5 +6,4 @@ package base;
 public interface AccessOps2<T> {
     void addAll(T source);
     T union(T source);
-    Boolean equals(T subject);
 }

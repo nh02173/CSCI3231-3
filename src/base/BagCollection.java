@@ -164,8 +164,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         return output;
     }
 
-    @Override
-    public Boolean equals(BagCollection<T> subject) {
+    public Boolean equals(BagCollection<T> subject){
         // Check size first
         if(subject.size() == this.max){
             // Union to temp
