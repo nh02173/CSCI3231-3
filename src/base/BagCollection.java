@@ -170,19 +170,23 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         if(subject.size() == this.max){
             // Union to temp
             BagCollection<T> temp = this.union(subject);
-            T findItem;
+            T item;
 
             for(int index = 0; index < temp.size(); index++){
                 // Hold item
-                findItem = subject.get(index);
+                item = subject.get(index);
+
                 // Remove from temp
-                temp.remove(findItem);
-                // Temp should still contain a duplicate if equal to 'this'
-                if(temp.contains(findItem) < 0){
+                if(temp.remove(item) == null) {
                     return false;
                 } else {
-                    // Remove the item's pair
-                    temp.remove(findItem);
+                    // Temp should still contain a duplicate if equal
+                    if (temp.contains(item) < 0) {
+                        return false;
+                    } else {
+                        // Remove the item's pair
+                        temp.remove(item);
+                    }
                 }
             }
             return true;
