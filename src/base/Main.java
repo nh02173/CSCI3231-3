@@ -32,7 +32,7 @@ public class Main {
         // Post-Add
         System.out.println("-The current state is isEmpty=" + test1.isEmpty());
 
-        // Should be 10 + sampleSize1
+        // Should be sampleSize1
         System.out.println("-The current number of items is " + test1.size());
 
         /* Test with numbers
