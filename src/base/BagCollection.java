@@ -157,10 +157,11 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public BagCollection<T> union(BagCollection<T> source) {
+        // Set output to exact size of union
         BagCollection<T> output = new BagCollection<T>(source.size() + this.itemCount);
-        for(int index = 0; index < source.size(); index++){
-            output.add(source.get(index));
-        }
+        // Add'em up
+        output.addAll(this);
+        output.addAll(source);
         return output;
     }
 
