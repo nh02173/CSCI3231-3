@@ -25,7 +25,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         // Only positive values are allowed (0 is ok)
         if (InitialSize >= 0) {
             this.max = InitialSize;
-            basis = new Object[this.max];
+            this.basis = new Object[this.max];
         } else {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
@@ -51,19 +51,19 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
     @Override
     public void add(T element) {
         // Expand items == capacity
-        if (itemCount == basis.length) {
+        if (this.itemCount == this.basis.length) {
             expand();
         }
-        itemCount++;
-        basis[itemCount - 1] = element;
+        this.itemCount++;
+        this.basis[this.itemCount - 1] = element;
 
         System.out.println("Added new element '" + element.toString() + "'");
     }
 
     // Extra: Retrieve item at index
     public T get(int index){
-        if(index < itemCount) {
-            return (T) basis[index];
+        if(index < this.itemCount) {
+            return (T) this.basis[index];
         } else {
             throw new IndexOutOfBoundsException("The collection index specified is out of bounds.");
         }
@@ -85,16 +85,16 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
     private T removeInternal(int index) {
         T output;
 
-        if (index < itemCount) {
-            output= (T) basis[index];
+        if (index < this.itemCount) {
+            output= (T) this.basis[index];
 
             // Copy from index + 1 to end - 1
-            System.arraycopy(basis, index + 1, basis, index, (itemCount - index) - 1);
+            System.arraycopy(this.basis, index + 1, this.basis, index, (this.itemCount - index) - 1);
 
             // Then null the last item
-            basis[itemCount - 1] = null;
+            this.basis[this.itemCount - 1] = null;
 
-            itemCount--;
+            this.itemCount--;
             System.out.println("Removed item at index " + index);
             System.out.println(this.toString());
 
@@ -109,18 +109,18 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         Random gen = new Random();
 
         // Remove by item count since the collection doesn't shrink
-        int selection = gen.nextInt(itemCount - 1);
+        int selection = gen.nextInt(this.itemCount - 1);
 
         System.out.println("Randomly selected item at position " + selection + " ('"
-                + basis[selection].toString() + "') for removal");
-        return remove((T) basis[selection]);
+                + this.basis[selection].toString() + "') for removal");
+        return remove((T) this.basis[selection]);
     }
 
     @Override
     // Only locates first occurrence of 'element'
     public int contains(T element) {
-        for (int index = 0; index < itemCount; index++) {
-            if (basis[index].equals(element)) {
+        for (int index = 0; index < this.itemCount; index++) {
+            if (this.basis[index].equals(element)) {
                 System.out.println("Found element '" + element.toString() + "' at index " + index);
                 markItem(index);
                 return index;
@@ -135,9 +135,9 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         if(DEBUG) {
             StringBuilder collect = new StringBuilder();
             collect.append("{");
-            for (int index = 0; index < itemCount; index++) {
-                collect.append(basis[index].toString());
-                if (index < itemCount - 1) {
+            for (int index = 0; index < this.itemCount; index++) {
+                collect.append(this.basis[index].toString());
+                if (index < this.itemCount - 1) {
                     collect.append(",");
                 }
             }
@@ -157,7 +157,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public BagCollection<T> union(BagCollection<T> source) {
-        BagCollection<T> output = this;
+        BagCollection<T> output = new BagCollection<T>(source.size() + this.itemCount);
         for(int index = 0; index < source.size(); index++){
             output.add(source.get(index));
         }
@@ -176,11 +176,11 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
                 findItem = subject.get(index);
                 // Remove from temp
                 temp.remove(findItem);
-                // Temp should still contain a duplicate if equal
+                // Temp should still contain a duplicate if equal to 'this'
                 if(temp.contains(findItem) < 0){
                     return false;
                 } else {
-                    // Remove the duplicate
+                    // Remove the item's pair
                     temp.remove(findItem);
                 }
             }
@@ -192,10 +192,10 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     private void expand() {
         // Bit shift to expand gracefully
-        max += max >> 1;
-        basis = Arrays.copyOf(basis, max);
+        this.max += this.max >> 1;
+        this.basis = Arrays.copyOf(this.basis, this.max);
 
-        System.out.println("> Capacity expanded to " + max);
+        System.out.println("> Capacity expanded to " + this.max);
     }
 
     // Adds nice console output for debugging.
