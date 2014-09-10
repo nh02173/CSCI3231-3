@@ -6,24 +6,10 @@ import java.util.Random;
 /**
  * Created by Nick on 9/7/2014.
  */
-public class BagCollection<T> implements AccessOps1<T> {
+public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection<T>> {
     private static final int DEFAULT_SIZE = 10;
     private int size, itemCount = 0;
     private Object[] basis;
-
-    @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
-    public int size() {
-        return this.itemCount;
-    }
-
-    public int getCapacity() {
-        return this.size;
-    }
 
     public BagCollection() {
         this(DEFAULT_SIZE);
@@ -38,6 +24,20 @@ public class BagCollection<T> implements AccessOps1<T> {
         }
 
         System.out.println(">>> Bag set with initial capacity of " + this.size);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
+    @Override
+    public int size() {
+        return this.itemCount;
+    }
+
+    public int getCapacity() {
+        return this.size;
     }
 
     @Override
@@ -57,11 +57,11 @@ public class BagCollection<T> implements AccessOps1<T> {
         int result = contains(element);
 
         if (result >= 0) {
-            removeAtIndex(result);
+            removeInternal(result);
         }
     }
 
-    public void removeAtIndex(int index) {
+    private void removeInternal(int index) {
         if (index < itemCount) {
             System.arraycopy(basis, index + 1, basis, index, (itemCount - index) - 1);
             basis[itemCount - 1] = null;
@@ -108,6 +108,21 @@ public class BagCollection<T> implements AccessOps1<T> {
         }
         collect.append("}");
         return collect.toString();
+    }
+
+    @Override
+    public void addAll(BagCollection<T> srcCollection, BagCollection<T> destCollection) {
+
+    }
+
+    @Override
+    public BagCollection<T> union(BagCollection<T> col1, BagCollection<T> col2) {
+        return null;
+    }
+
+    @Override
+    public Boolean equals(BagCollection<T> col1, BagCollection<T> col2) {
+        return null;
     }
 
     private void expand() {
