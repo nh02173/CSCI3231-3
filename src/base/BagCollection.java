@@ -30,7 +30,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
 
-        System.out.println(">>> Bag set with initial capacity of " + this.max);
+        System.out.println("->Bag set with initial capacity of " + this.max);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
     }
 
     // Extra: Retrieve item at index
-    public T get(int index){
-        if(index < this.itemCount) {
+    public T get(int index) {
+        if (index < this.itemCount) {
             return (T) this.basis[index];
         } else {
             throw new IndexOutOfBoundsException("The collection index specified is out of bounds.");
@@ -86,7 +86,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         T output;
 
         if (index < this.itemCount) {
-            output= (T) this.basis[index];
+            output = (T) this.basis[index];
 
             // Copy from index + 1 to end - 1
             System.arraycopy(this.basis, index + 1, this.basis, index, (this.itemCount - index) - 1);
@@ -96,7 +96,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
             this.itemCount--;
             System.out.println("Removed item at index " + index);
-            System.out.println(this.toString()+"\n");
+            System.out.println(this.toString() + "\n");
 
             return output;
         } else {
@@ -132,7 +132,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public String toString() {
-        if(DEBUG) {
+        if (DEBUG) {
             StringBuilder collect = new StringBuilder();
             collect.append("{");
             for (int index = 0; index < this.itemCount; index++) {
@@ -150,7 +150,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public void addAll(BagCollection<T> source) {
-        for(int index = 0; index < source.size(); index++){
+        for (int index = 0; index < source.size(); index++) {
             this.add(source.get(index));
         }
     }
@@ -165,19 +165,19 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         return output;
     }
 
-    public Boolean equals(BagCollection<T> subject){
+    public Boolean equals(BagCollection<T> subject) {
         // Check size first
-        if(subject.size() == this.itemCount){
+        if (subject.size() == this.itemCount) {
             // Union to temp
             BagCollection<T> temp = this.union(subject);
             // Set some initial values
             T item;
             // This loop removes 2 items per spin
-            while(temp.size() > 0){
+            while (temp.size() > 0) {
                 // Grab at half scale from subject
-                item = subject.get((temp.size()/2)-1);
+                item = subject.get((temp.size() / 2) - 1);
                 // Remove from temp
-                if(temp.remove(item) == null) {
+                if (temp.remove(item) == null) {
                     return false;
                 } else {
                     // Temp should still contain a duplicate if equal
@@ -200,12 +200,12 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
         this.max += this.max >> 1;
         this.basis = Arrays.copyOf(this.basis, this.max);
 
-        System.out.println("> Capacity expanded to " + this.max);
+        System.out.println("->Capacity expanded to " + this.max);
     }
 
     // Adds nice console output for debugging.
     private void markItem(int basisIndex) {
-        if(DEBUG) {
+        if (DEBUG) {
             String toString = this.toString();
             StringBuilder collect = new StringBuilder();
             collect.append(toString);
