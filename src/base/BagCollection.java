@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * Created by Nick on 9/7/2014.
  */
-public class BagCollection<T> implements AccessOps1<T> {
+public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection<T>> {
     private static final int DEFAULT_SIZE = 10;
 
     // Debugging console output adds unneeded complexity. Set to false otherwise.
@@ -25,12 +25,12 @@ public class BagCollection<T> implements AccessOps1<T> {
         // Only positive values are allowed (0 is ok)
         if (InitialSize >= 0) {
             this.max = InitialSize;
-            basis = new Object[this.max];
+            this.basis = new Object[this.max];
         } else {
             throw new IllegalArgumentException("Invalid capacity was specified: " + InitialSize);
         }
 
-        System.out.println(">>> Bag set with initial capacity of " + this.max);
+        System.out.println("->Bag set with initial capacity of " + this.max);
     }
 
     @Override
@@ -44,26 +44,26 @@ public class BagCollection<T> implements AccessOps1<T> {
         return this.itemCount;
     }
 
-    public int getCapacity() {
+    public int getMax() {
         return this.max;
     }
 
     @Override
     public void add(T element) {
-        // Expand items == capacity
-        if (itemCount == basis.length) {
+        // Expand when items == capacity
+        if (this.itemCount == this.max) {
             expand();
         }
-        itemCount++;
-        basis[itemCount - 1] = element;
+        this.itemCount++;
+        this.basis[this.itemCount - 1] = element;
 
         System.out.println("Added new element '" + element.toString() + "'");
     }
 
     // Extra: Retrieve item at index
-    public T get(int index){
-        if(index < itemCount) {
-            return (T) basis[index];
+    public T get(int index) {
+        if (index < this.itemCount) {
+            return (T) this.basis[index];
         } else {
             throw new IndexOutOfBoundsException("The collection index specified is out of bounds.");
         }
@@ -85,18 +85,18 @@ public class BagCollection<T> implements AccessOps1<T> {
     private T removeInternal(int index) {
         T output;
 
-        if (index < itemCount) {
-            output= (T) basis[index];
+        if (index < this.itemCount) {
+            output = (T) this.basis[index];
 
             // Copy from index + 1 to end - 1
-            System.arraycopy(basis, index + 1, basis, index, (itemCount - index) - 1);
+            System.arraycopy(this.basis, index + 1, this.basis, index, (this.itemCount - index) - 1);
 
             // Then null the last item
-            basis[itemCount - 1] = null;
+            this.basis[this.itemCount - 1] = null;
 
-            itemCount -= 1;
+            this.itemCount--;
             System.out.println("Removed item at index " + index);
-            System.out.println(this.toString());
+            System.out.println(this.toString() + "\n");
 
             return output;
         } else {
@@ -109,18 +109,18 @@ public class BagCollection<T> implements AccessOps1<T> {
         Random gen = new Random();
 
         // Remove by item count since the collection doesn't shrink
-        int selection = gen.nextInt(itemCount - 1);
+        int selection = gen.nextInt(this.itemCount - 1);
 
         System.out.println("Randomly selected item at position " + selection + " ('"
-                + basis[selection].toString() + "') for removal");
-        return remove((T) basis[selection]);
+                + this.basis[selection].toString() + "') for removal");
+        return remove((T) this.basis[selection]);
     }
 
     @Override
     // Only locates first occurrence of 'element'
     public int contains(T element) {
-        for (int index = 0; index < itemCount; index++) {
-            if (basis[index].equals(element)) {
+        for (int index = 0; index < this.itemCount; index++) {
+            if (this.basis[index].equals(element)) {
                 System.out.println("Found element '" + element.toString() + "' at index " + index);
                 markItem(index);
                 return index;
@@ -132,33 +132,80 @@ public class BagCollection<T> implements AccessOps1<T> {
 
     @Override
     public String toString() {
-        if(DEBUG) {
+        if (DEBUG) {
             StringBuilder collect = new StringBuilder();
             collect.append("{");
-            for (int index = 0; index < itemCount; index++) {
-                collect.append(basis[index].toString());
-                if (index < itemCount - 1) {
+            for (int index = 0; index < this.itemCount; index++) {
+                collect.append(this.basis[index].toString());
+                if (index < this.itemCount - 1) {
                     collect.append(",");
                 }
             }
             collect.append("}");
             return collect.toString();
         } else {
-            return "Collection contains " + this.itemCount + " elements.";
+            return "BagCollection<T> with " + this.itemCount + " elements.";
+        }
+    }
+
+    @Override
+    public void addAll(BagCollection<T> source) {
+        for (int index = 0; index < source.size(); index++) {
+            this.add(source.get(index));
+        }
+    }
+
+    @Override
+    public BagCollection<T> union(BagCollection<T> source) {
+        // Set output to exact size of union
+        BagCollection<T> output = new BagCollection<T>(source.size() + this.itemCount);
+        // Add'em up
+        output.addAll(this);
+        output.addAll(source);
+        return output;
+    }
+
+    public Boolean equals(BagCollection<T> subject) {
+        // Check size first
+        if (subject.size() == this.itemCount) {
+            // Union to temp
+            BagCollection<T> temp = this.union(subject);
+            // Set some initial values
+            T item;
+            // This loop removes 2 items per spin
+            while (temp.size() > 0) {
+                // Grab at half scale from subject
+                item = subject.get((temp.size() / 2) - 1);
+                // Remove from temp
+                if (temp.remove(item) == null) {
+                    return false;
+                } else {
+                    // Temp should still contain a duplicate if equal
+                    if (temp.contains(item) < 0) {
+                        return false;
+                    } else {
+                        // Remove the item's pair
+                        temp.remove(item);
+                    }
+                }
+            }
+            return temp.size() == 0;
+        } else {
+            return false;
         }
     }
 
     private void expand() {
         // Bit shift to expand gracefully
-        max += max >> 1;
-        basis = Arrays.copyOf(basis, max);
+        this.max += this.max >> 1;
+        this.basis = Arrays.copyOf(this.basis, this.max);
 
-        System.out.println("> Capacity expanded to " + max);
+        System.out.println("->Capacity expanded to " + this.max);
     }
 
     // Adds nice console output for debugging.
     private void markItem(int basisIndex) {
-        if(DEBUG) {
+        if (DEBUG) {
             String toString = this.toString();
             StringBuilder collect = new StringBuilder();
             collect.append(toString);
