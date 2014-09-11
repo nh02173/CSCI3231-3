@@ -50,8 +50,8 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     @Override
     public void add(T element) {
-        // Expand items == capacity
-        if (this.itemCount == this.basis.length) {
+        // Expand when items == capacity
+        if (this.itemCount == this.max) {
             expand();
         }
         this.itemCount++;
