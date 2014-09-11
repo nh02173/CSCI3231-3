@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) {
 
         // ACCESS OPERATIONS 1
+        System.out.println(">>ACCESS OPERATIONS 1");
 
         /* Test with strings
         - Test constructor w/default
@@ -51,21 +52,28 @@ public class Main {
             test2.add(getRandomInt(sampleSize2));
         }
 
+        System.out.println(">>Test contains(T):");
         test2.contains(getRandomInt(sampleSize2));
+
+        System.out.println(">>Test remove(T):");
         test2.remove(getRandomInt(sampleSize2));
+
+        System.out.println(">>Test removeRandom():");
         test2.removeRandom();
 
         // ACCESS OPERATIONS 2
+        System.out.println(">>ACCESS OPERATIONS 2");
 
         /* Test collections (matching types)
-        - Test union() on empty collection
-        - Test union() on non-empty collection
-        - Test addAll()
-        - Test equals() on matching collection
-        - Test equals() on non-matching collection
+        - Test union(BagCollection<T>) on empty collection
+        - Test union(BagCollection<T>) on non-empty collection
+        - Test addAll(BagCollection<T>)
+        - Test equals(BagCollection<T>) on matching collection
+        - Test equals(BagCollection<T>) on non-matching collection
+        - Test equals(BagCollection<T>) on matching but disparate collection
          */
 
-        int sampleSize3 = 2;
+        int sampleSize3 = 5;
 
         // Original
         BagCollection<Integer> test3 = new BagCollection<Integer>(sampleSize3);
@@ -77,32 +85,39 @@ public class Main {
         }
 
         // Union an empty instance to create a new collection (Simulates a copy operation)
+        System.out.println(">>Clone via union(BagCollection<T>) with empty set:");
         BagCollection<Integer> test4 = test3.union(new BagCollection<Integer>(0));
+        System.out.println("Result= " + test4.toString());
 
-        // Union the copy with original (Simulates an doubling of the collection)
+        // Union the copy with original (Simulates a doubling of the collection)
+        System.out.println(">>Double via union(BagCollection<T>) with Clone:");
         BagCollection<Integer> test5 = test3.union(test4);
+        System.out.println("Result= " + test5.toString());
 
         // Add together the copy and the original. (Make the original a second double by adding the clone to it)
         // This instance will also expand on demand making its max differ from the union result.
+        System.out.println(">>Double via addAll(BagCollection<T>): (Original + Clone)");
         test3.addAll(test4);
+        System.out.println("Result= " + test3.toString());
 
-        // Compare the two doubles
-        System.out.println(test3.equals(test5));
+        System.out.println(">>Compare of two Doubles via equals(BagCollection<T>):");
+        System.out.println("Result= " + test3.equals(test5));
 
-        // Compare the clone and one of the doubles
-        System.out.println(test3.equals(test4));
+        System.out.println(">>Compare of original Clone and Double via equals(BagCollection<T>):");
+        System.out.println("Result= " + test3.equals(test4));
+
+        System.out.println(">>Modify Clone and compare again via equals(BagCollection<T>):");
+        test3.removeRandom();
+        test3.add(1234567890);
+        System.out.println("Result= " + test3.equals(test5));
     }
 
     static int getRandomInt(int bounds) {
         Random gen = new Random();
-        try {
-            if (bounds > 0) {
-                return gen.nextInt(bounds);
-            } else {
-                return gen.nextInt();
-            }
-        } finally {
-            gen=null;
+        if (bounds > 0) {
+            return gen.nextInt(bounds);
+        } else {
+            return gen.nextInt();
         }
     }
 
