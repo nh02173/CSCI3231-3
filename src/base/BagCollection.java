@@ -96,7 +96,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
             this.itemCount--;
             System.out.println("Removed item at index " + index);
-            System.out.println(this.toString());
+            System.out.println(this.toString()+"\n");
 
             return output;
         } else {
@@ -167,15 +167,15 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
 
     public Boolean equals(BagCollection<T> subject){
         // Check size first
-        if(subject.size() == this.max){
+        if(subject.size() == this.itemCount){
             // Union to temp
             BagCollection<T> temp = this.union(subject);
+            // Set some initial values
             T item;
-
-            for(int index = 0; index < temp.size(); index++){
-                // Hold item
-                item = subject.get(index);
-
+            // This loop removes 2 items per spin
+            while(temp.size() > 0){
+                // Grab at half scale from subject
+                item = subject.get((temp.size()/2)-1);
                 // Remove from temp
                 if(temp.remove(item) == null) {
                     return false;
@@ -189,7 +189,7 @@ public class BagCollection<T> implements AccessOps1<T>, AccessOps2<BagCollection
                     }
                 }
             }
-            return true;
+            return temp.size() == 0;
         } else {
             return false;
         }
