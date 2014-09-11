@@ -122,7 +122,7 @@ public class Main {
     }
 
     static String getRandomText() {
-        String input = "The quick brown fox jumps over the lazy dog.";
+        String input = "The five boxing wizards jump quickly.";
 
         Random gen = new Random();
         int start = gen.nextInt(input.length());
